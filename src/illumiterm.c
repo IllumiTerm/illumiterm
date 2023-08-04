@@ -200,13 +200,13 @@ void AdjustFont(VteTerminal *terminal, GtkWindow *window, gdouble factor)
     gtk_window_resize(window, columns * char_width + owidth, rows * char_height + oheight);
 }
 
-void IncreaseFont(GtkWidget *widget, gpointer window)
+void zoomIn(GtkWidget *widget, gpointer window)
 {
     VteTerminal *terminal = VTE_TERMINAL(widget);
     AdjustFont(terminal, GTK_WINDOW(window), 1.125);
 }
 
-void DecreaseFont(GtkWidget *widget, gpointer window)
+void zoomOut(GtkWidget *widget, gpointer window)
 {
     VteTerminal *terminal = VTE_TERMINAL(widget);
     AdjustFont(terminal, GTK_WINDOW(window), 1.0 / 1.125);
@@ -242,8 +242,8 @@ gboolean HandleKeyPress(GtkWidget *widget, GdkEventKey *event, gpointer window)
             case GDK_KEY_w: CloseTab(); return TRUE;
             case GDK_KEY_c: vte_terminal_copy_clipboard_format(terminal, VTE_FORMAT_TEXT); return TRUE;
             case GDK_KEY_v: vte_terminal_paste_clipboard(terminal); return TRUE;
-            case GDK_KEY_plus: IncreaseFont(widget, window); return TRUE;
-            case GDK_KEY_underscore: DecreaseFont(widget, window); return TRUE;
+            case GDK_KEY_plus: zoomIn(widget, window); return TRUE;
+            case GDK_KEY_underscore: zoomOut(widget, window); return TRUE;
             case GDK_KEY_parenright: ZoomReset(terminal, window); return TRUE;
             case GDK_KEY_i: NameTab(); return TRUE;
             case GDK_KEY_Left: PreviousTab(); return TRUE;
@@ -489,14 +489,6 @@ GtkWidget* FileMenu() {
     gtk_widget_show_all(file_menu);
 
     return file_menu;
-}
-
-void ZoomIn(void) {
-    g_print("ZoomIn\n");
-}
-
-void ZoomOut(void) {
-    g_print("ZoomOut\n");
 }
 
 void palette_selected(void)
@@ -1012,10 +1004,10 @@ GtkWidget* EditMenu() {
     separator = gtk_separator_menu_item_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), separator);
 
-    GtkWidget *zoom_in_item = EditMenuHelper("/usr/share/icons/hicolor/24x24/apps/zoom-in.svg", "Zoom In", "Shift+Ctrl++", G_CALLBACK(ZoomIn));
+    GtkWidget *zoom_in_item = EditMenuHelper("/usr/share/icons/hicolor/24x24/apps/zoom-in.svg", "Zoom In", "Shift+Ctrl++", G_CALLBACK(zoomIn));
     gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), zoom_in_item);
 
-    GtkWidget *zoom_out_item = EditMenuHelper("/usr/share/icons/hicolor/24x24/apps/zoom-out.svg", "Zoom Out", "Shift+Ctrl+_", G_CALLBACK(ZoomOut));
+    GtkWidget *zoom_out_item = EditMenuHelper("/usr/share/icons/hicolor/24x24/apps/zoom-out.svg", "Zoom Out", "Shift+Ctrl+_", G_CALLBACK(zoomOut));
     gtk_menu_shell_append(GTK_MENU_SHELL(edit_menu), zoom_out_item);
 
     GtkWidget *reset_item = EditMenuHelper("/usr/share/icons/hicolor/24x24/apps/zoom-original.svg", "Zoom Reset", "Shift+Ctrl+)", G_CALLBACK(ZoomReset));
