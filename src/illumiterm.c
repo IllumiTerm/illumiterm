@@ -224,8 +224,8 @@ void EnterFullscreen(GtkWindow *window) {
     gtk_window_fullscreen(window);
 }
 
-void ResetWindowPosition(void) {
-    g_print("ResetWindowPosition\n");
+void ResetWindowPosition(GtkWindow *window) {
+    gtk_window_unfullscreen(window);
 }
 
 gboolean HandleKeyPress(GtkWidget *widget, GdkEventKey *event, gpointer window)
@@ -260,7 +260,7 @@ gboolean HandleKeyPress(GtkWidget *widget, GdkEventKey *event, gpointer window)
             case GDK_KEY_Left: MoveWindowLeft(); return TRUE;
             case GDK_KEY_Right: MoveWindowRight(); return TRUE;
             case GDK_KEY_Up: EnterFullscreen(window); return TRUE;
-            case GDK_KEY_Down: ResetWindowPosition(); return TRUE;
+            case GDK_KEY_Down: ResetWindowPosition(window); return TRUE;
         }
     }
     return FALSE;
