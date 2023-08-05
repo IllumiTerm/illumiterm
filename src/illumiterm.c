@@ -1219,7 +1219,7 @@ void on_entry_activate(GtkEntry *entry, gpointer user_data) {
     g_print("Search Text: %s\n", search_text);
     g_print("Match Case: %s\n", match_case ? "True" : "False");
     g_print("Match Entire Word Only: %s\n", match_word ? "True" : "False");
-    g_print("Use Regular Expression: %s\n", use_regex ? "True" : "False");
+    g_print("Use as Regular Expression: %s\n", use_regex ? "True" : "False");
     g_print("Wrap Around: %s\n", wrap_around ? "True" : "False");
 
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(entry)));
@@ -1253,7 +1253,7 @@ void find(void) {
 
     GtkWidget *check_match_case = gtk_check_button_new_with_label("Match Case");
     GtkWidget *check_match_word = gtk_check_button_new_with_label("Match Entire Word Only");
-    GtkWidget *check_regex = gtk_check_button_new_with_label("Use Regular Expression");
+    GtkWidget *check_regex = gtk_check_button_new_with_label("Use as Regular Expression");
     GtkWidget *check_wrap_around = gtk_check_button_new_with_label("Wrap Around");
 
     gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_case);
