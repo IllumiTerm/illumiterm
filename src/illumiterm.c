@@ -1203,8 +1203,73 @@ GtkWidget* HelpMenu() {
     return help_menu;
 }
 
-void SearchIcon(void) {
-    g_print("SearchIcon\n");
+void on_entry_activate(GtkEntry *entry, gpointer user_data) {
+    const gchar *search_text = gtk_entry_get_text(GTK_ENTRY(entry));
+
+    GtkWidget *check_match_case = GTK_WIDGET(user_data);
+    GtkWidget *check_match_word = g_object_get_data(G_OBJECT(check_match_case), "check_match_word");
+    GtkWidget *check_regex = g_object_get_data(G_OBJECT(check_match_case), "check_regex");
+    GtkWidget *check_wrap_around = g_object_get_data(G_OBJECT(check_match_case), "check_wrap_around");
+
+    gboolean match_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_match_case));
+    gboolean match_word = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_match_word));
+    gboolean use_regex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_regex));
+    gboolean wrap_around = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_wrap_around));
+
+    g_print("Search Text: %s\n", search_text);
+    g_print("Match Case: %s\n", match_case ? "True" : "False");
+    g_print("Match Entire Word Only: %s\n", match_word ? "True" : "False");
+    g_print("Use Regular Expression: %s\n", use_regex ? "True" : "False");
+    g_print("Wrap Around: %s\n", wrap_around ? "True" : "False");
+
+    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(entry)));
+}
+
+void find(void) {
+    gtk_init(0, NULL);
+
+    GtkWidget *dialog = gtk_dialog_new();
+    gtk_window_set_title(GTK_WINDOW(dialog), "Find");
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), NULL);
+    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+    g_signal_connect(G_OBJECT(dialog), "delete-event", G_CALLBACK(gtk_widget_destroy), NULL);
+
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
+
+    GtkWidget *entry = gtk_entry_new();
+    gtk_container_add(GTK_CONTAINER(hbox), entry);
+
+    GtkWidget *up_arrow_icon = gtk_image_new_from_icon_name("go-up", GTK_ICON_SIZE_BUTTON);
+    GtkWidget *down_arrow_icon = gtk_image_new_from_icon_name("go-down", GTK_ICON_SIZE_BUTTON);
+
+    GtkWidget *up_button = gtk_button_new();
+    GtkWidget *down_button = gtk_button_new();
+    gtk_button_set_image(GTK_BUTTON(up_button), up_arrow_icon);
+    gtk_button_set_image(GTK_BUTTON(down_button), down_arrow_icon);
+
+    gtk_container_add(GTK_CONTAINER(hbox), up_button);
+    gtk_container_add(GTK_CONTAINER(hbox), down_button);
+
+    GtkWidget *check_match_case = gtk_check_button_new_with_label("Match Case");
+    GtkWidget *check_match_word = gtk_check_button_new_with_label("Match Entire Word Only");
+    GtkWidget *check_regex = gtk_check_button_new_with_label("Use Regular Expression");
+    GtkWidget *check_wrap_around = gtk_check_button_new_with_label("Wrap Around");
+
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_case);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_word);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_regex);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_wrap_around);
+
+    g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(on_entry_activate), check_match_case);
+
+    g_object_set_data(G_OBJECT(check_match_case), "check_match_word", check_match_word);
+    g_object_set_data(G_OBJECT(check_match_case), "check_regex", check_regex);
+    g_object_set_data(G_OBJECT(check_match_case), "check_wrap_around", check_wrap_around);
+
+    gtk_widget_show_all(dialog);
+
+    gtk_main();
 }
 
 GtkWidget* CreateMenu() {
@@ -1242,7 +1307,7 @@ GtkWidget* CreateMenu() {
     gtk_box_pack_start(GTK_BOX(search_icon_box), search_icon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(search_icon_box), gtk_label_new(""), FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(search_icon_item), search_icon_box);
-    g_signal_connect(G_OBJECT(search_icon_item), "button-press-event", G_CALLBACK(SearchIcon), NULL);
+    g_signal_connect(G_OBJECT(search_icon_item), "button-press-event", G_CALLBACK(find), NULL);
 
     GtkWidget *separator = gtk_separator_menu_item_new();
 
