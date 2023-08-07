@@ -99,6 +99,16 @@ void NameTab(void) {
 
     GtkWidget *entry = gtk_entry_new();
     gtk_entry_set_max_length(GTK_ENTRY(entry), 50);
+
+    const gchar *icon_filename = "/usr/share/icons/hicolor/24x24/apps/edit.svg";
+    GdkPixbuf *icon_pixbuf = gdk_pixbuf_new_from_file(icon_filename, NULL);
+    if (icon_pixbuf != NULL) {
+        gtk_entry_set_icon_from_pixbuf(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, icon_pixbuf);
+        g_object_unref(icon_pixbuf);
+    } else {
+        g_warning("Failed to load the icon: %s", icon_filename);
+    }
+
     gtk_widget_show(entry);
 
     gchar *username = getlogin();
@@ -129,6 +139,11 @@ void NameTab(void) {
     }
 
     gtk_container_add(GTK_CONTAINER(content_area), entry);
+
+    GtkWidget *ok_button = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+    GtkWidget *cancel_button = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
+    gtk_widget_set_size_request(ok_button, 150, -1);
+    gtk_widget_set_size_request(cancel_button, 150, -1);
 
     gint result = gtk_dialog_run(GTK_DIALOG(dialog));
     if (result == GTK_RESPONSE_OK) {
@@ -1237,8 +1252,16 @@ void find(void) {
     GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
 
+    const gchar *icon_filename = "/usr/share/icons/hicolor/16x16/apps/preferences-system-search-symbolic.svg";
+    GdkPixbuf *icon_pixbuf = gdk_pixbuf_new_from_file(icon_filename, NULL);
     GtkWidget *entry = gtk_entry_new();
-    gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, "edit-find-symbolic");
+    gtk_entry_set_icon_from_pixbuf(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, icon_pixbuf);
+    gtk_widget_show(entry);
+    if (icon_pixbuf != NULL) {
+        g_object_unref(icon_pixbuf);
+    } else {
+        g_warning("Failed to load the icon: %s", icon_filename);
+    }
 
     gtk_widget_set_size_request(entry, 300, -1);
 
