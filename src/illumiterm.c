@@ -1238,6 +1238,10 @@ void find(void) {
     gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
 
     GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, "edit-find-symbolic");
+
+    gtk_widget_set_size_request(entry, 300, -1);
+
     gtk_container_add(GTK_CONTAINER(hbox), entry);
 
     GtkWidget *up_arrow_icon = gtk_image_new_from_icon_name("go-up", GTK_ICON_SIZE_BUTTON);
