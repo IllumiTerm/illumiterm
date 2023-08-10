@@ -858,7 +858,6 @@ void ShortcutsTab(GtkNotebook *notebook) {
     gtk_container_set_border_width(GTK_CONTAINER(shortcuts_grid), 10);
     gtk_widget_set_halign(shortcuts_grid, GTK_ALIGN_END);
 
-
     GtkWidget *labels[] = {
         gtk_label_new("New Window:"),
         gtk_label_new("New Tab:"),
@@ -920,7 +919,6 @@ void ShortcutsTab(GtkNotebook *notebook) {
         "Ctrl+Page Right",  
         "Ctrl+Page Up",  
         "Ctrl+Page Down",  
-
     };
     
  for (int i = 0; i < G_N_ELEMENTS(labels); ++i) {
