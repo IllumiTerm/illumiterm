@@ -217,15 +217,13 @@ void AdjustFont(VteTerminal *terminal, GtkWindow *window, gdouble factor)
 
 void zoomIn(GtkWidget *widget, gpointer window)
 {
-    VteTerminal *terminal = VTE_TERMINAL(widget); /* Zooming Action: VteTerminal *terminal = VTE_TERMINAL(widget);
-This line attempts to cast the widget pointer (which is a GTK widget) into a VteTerminal pointer using the VTE_TERMINAL macro. This is where the potential "invalid cast" issue could arise if widget is not actually a VteTerminal widget.*/
+    VteTerminal *terminal = VTE_TERMINAL(widget);
     AdjustFont(terminal, GTK_WINDOW(window), 1.125);
 }
 
 void zoomOut(GtkWidget *widget, gpointer window)
 {
-    VteTerminal *terminal = VTE_TERMINAL(widget); /* Zooming Action: VteTerminal *terminal = VTE_TERMINAL(widget);
-This line attempts to cast the widget pointer (which is a GTK widget) into a VteTerminal pointer using the VTE_TERMINAL macro. This is where the potential "invalid cast" issue could arise if widget is not actually a VteTerminal widget.*/
+    VteTerminal *terminal = VTE_TERMINAL(widget);
     AdjustFont(terminal, GTK_WINDOW(window), 1.0 / 1.125);
 }
 
