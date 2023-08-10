@@ -1,4 +1,4 @@
-## Work in Progress 
+###### Work in Progress 
 
 <h2 align="center">IllumiTerm</h2>
 
