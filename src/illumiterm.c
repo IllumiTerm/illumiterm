@@ -1272,13 +1272,23 @@ void find(void) {
 
     gtk_container_add(GTK_CONTAINER(hbox), entry);
 
-    GtkWidget *up_arrow_icon = gtk_image_new_from_icon_name("go-up", GTK_ICON_SIZE_BUTTON);
-    GtkWidget *down_arrow_icon = gtk_image_new_from_icon_name("go-down", GTK_ICON_SIZE_BUTTON);
+    GdkPixbuf *up_arrow_pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/24x24/apps/go-up.svg", NULL);
+    GdkPixbuf *down_arrow_pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/24x24/apps/go-down.svg", NULL);
+
+    GtkWidget *up_arrow_image = gtk_image_new_from_pixbuf(up_arrow_pixbuf);
+    GtkWidget *down_arrow_image = gtk_image_new_from_pixbuf(down_arrow_pixbuf);
+
+    if (up_arrow_pixbuf != NULL) {
+        g_object_unref(up_arrow_pixbuf);
+    }
+    if (down_arrow_pixbuf != NULL) {
+        g_object_unref(down_arrow_pixbuf);
+    }
 
     GtkWidget *up_button = gtk_button_new();
     GtkWidget *down_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(up_button), up_arrow_icon);
-    gtk_button_set_image(GTK_BUTTON(down_button), down_arrow_icon);
+    gtk_button_set_image(GTK_BUTTON(up_button), up_arrow_image);
+    gtk_button_set_image(GTK_BUTTON(down_button), down_arrow_image);
 
     gtk_container_add(GTK_CONTAINER(hbox), up_button);
     gtk_container_add(GTK_CONTAINER(hbox), down_button);
