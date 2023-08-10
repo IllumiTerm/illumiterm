@@ -2,13 +2,16 @@
 
 ## IllumiTerm 
 
-The user interface is intuitive and user-friendly, making it easy for users to navigate and complete their tasks efficiently. The features demonstrate a deep understanding of the needs and requirements of the target audience.
+![Screenshot from 2023-08-10 04-40-21](https://github.com/IllumiTerm/illumiterm/assets/69394316/504752dc-59c5-4bf7-8e19-0311ae6e96c5)
+
+The user interface is intuitive and user-friendly, making it easy for users to navigate and<br> 
+complete their tasks efficiently. The features demonstrate a deep understanding of the needs<br>
+and requirements of the target audience.
 
 ## Dependencies
 
-This dependency is listed as the package name used in Debian. If your
-distribution is neither Debian nor its derivatives, you could find equivalents
-for your target distribution.
+This dependency is listed as the package name used in Debian. If your distribution is neither<br>
+Debian nor its derivatives, you could find equivalents for your target distribution.
 
 ## Basic requirements for building
 
