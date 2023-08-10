@@ -1,6 +1,6 @@
 ## Work in Progress 
 
-## IllumiTerm 
+<h2 align="center">IllumiTerm</h2>
 
 ![Screenshot from 2023-08-10 05-10-46](https://github.com/IllumiTerm/illumiterm/assets/69394316/c1cc20bd-5697-4162-b441-ffb8563a6322)
 
