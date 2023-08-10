@@ -2,7 +2,9 @@
 
 <h2 align="center">IllumiTerm</h2>
 
-![Screenshot from 2023-08-10 05-10-46](https://github.com/IllumiTerm/illumiterm/assets/69394316/c1cc20bd-5697-4162-b441-ffb8563a6322)
+<p align="center">
+  <img src="https://github.com/IllumiTerm/illumiterm/assets/69394316/8382e2d0-c62d-4f48-aba4-5008b8bd96f1" alt="Screenshot">
+</p>
 
 The user interface is intuitive and user-friendly, making it easy for users to navigate and complete their tasks efficiently. The features demonstrate a deep understanding of the needs and requirements of the target audience.
 
