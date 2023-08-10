@@ -76,7 +76,6 @@ void NewWindow(void) {
 void CloseWindow(void) {
     exit(0);
 }
-
 void NewTab(void) {
     g_print("NewTab\n");
 }
@@ -218,13 +217,15 @@ void AdjustFont(VteTerminal *terminal, GtkWindow *window, gdouble factor)
 
 void zoomIn(GtkWidget *widget, gpointer window)
 {
-    VteTerminal *terminal = VTE_TERMINAL(widget);
+    VteTerminal *terminal = VTE_TERMINAL(widget); /* Zooming Action: VteTerminal *terminal = VTE_TERMINAL(widget);
+This line attempts to cast the widget pointer (which is a GTK widget) into a VteTerminal pointer using the VTE_TERMINAL macro. This is where the potential "invalid cast" issue could arise if widget is not actually a VteTerminal widget.*/
     AdjustFont(terminal, GTK_WINDOW(window), 1.125);
 }
 
 void zoomOut(GtkWidget *widget, gpointer window)
 {
-    VteTerminal *terminal = VTE_TERMINAL(widget);
+    VteTerminal *terminal = VTE_TERMINAL(widget); /* Zooming Action: VteTerminal *terminal = VTE_TERMINAL(widget);
+This line attempts to cast the widget pointer (which is a GTK widget) into a VteTerminal pointer using the VTE_TERMINAL macro. This is where the potential "invalid cast" issue could arise if widget is not actually a VteTerminal widget.*/
     AdjustFont(terminal, GTK_WINDOW(window), 1.0 / 1.125);
 }
 
@@ -848,11 +849,15 @@ void AdvancedTab(GtkNotebook *notebook) {
 void ShortcutsTab(GtkNotebook *notebook) {
     GtkWidget *shortcuts_tab = gtk_label_new("Shortcuts");
 
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
     GtkWidget *shortcuts_grid = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(shortcuts_grid), 10);
     gtk_grid_set_column_spacing(GTK_GRID(shortcuts_grid), 10);
     gtk_container_set_border_width(GTK_CONTAINER(shortcuts_grid), 10);
     gtk_widget_set_halign(shortcuts_grid, GTK_ALIGN_END);
+
 
     GtkWidget *labels[] = {
         gtk_label_new("New Window:"),
@@ -917,14 +922,17 @@ void ShortcutsTab(GtkNotebook *notebook) {
         "Ctrl+Page Down",  
 
     };
-
-    for (int i = 0; i < G_N_ELEMENTS(labels); ++i) {
+    
+ for (int i = 0; i < G_N_ELEMENTS(labels); ++i) {
         gtk_entry_set_text(GTK_ENTRY(shortcut_entries[i]), default_shortcuts[i]);
 
         gtk_grid_attach(GTK_GRID(shortcuts_grid), labels[i], 0, i, 1, 1);
         gtk_grid_attach(GTK_GRID(shortcuts_grid), shortcut_entries[i], 1, i, 1, 1);
     }
-    gtk_notebook_append_page(notebook, shortcuts_grid, shortcuts_tab);
+
+    gtk_container_add(GTK_CONTAINER(scrolled_window), shortcuts_grid);
+
+    gtk_notebook_append_page(notebook, scrolled_window, shortcuts_tab);
 }
 
 void OkButton(void) {
@@ -935,7 +943,7 @@ void Preferences(GtkMenuItem *menu_item, gpointer user_data)
 {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Preferences");
-    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_widget_destroyed), &window);
     gtk_window_set_icon_from_file(GTK_WINDOW(window), "/usr/share/icons/hicolor/48x48/apps/illumiterm.png", NULL);
     gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
@@ -943,16 +951,14 @@ void Preferences(GtkMenuItem *menu_item, gpointer user_data)
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
-    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-
     GtkWidget *notebook = gtk_notebook_new();
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_TOP);
+    gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
     gtk_widget_set_hexpand(notebook, TRUE);
     gtk_widget_set_vexpand(notebook, TRUE);
     gtk_container_set_border_width(GTK_CONTAINER(notebook), 10);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), notebook);
+    gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 
     StyleTab(GTK_NOTEBOOK(notebook));
     DisplayTab(GTK_NOTEBOOK(notebook));
@@ -961,7 +967,7 @@ void Preferences(GtkMenuItem *menu_item, gpointer user_data)
 
     GtkWidget *button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_button_box_set_layout(GTK_BUTTON_BOX(button_box), GTK_BUTTONBOX_END);
-    gtk_box_pack_end(GTK_BOX(vbox), button_box, FALSE, FALSE, 15);
+    gtk_box_pack_end(GTK_BOX(vbox), button_box, TRUE, TRUE, 15);
 
     GtkWidget *buttons_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancel");
