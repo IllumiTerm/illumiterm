@@ -28,3 +28,10 @@ $ make
 $ sudo make install 
 ```
 <img src="https://user-images.githubusercontent.com/69394316/229928414-12a215e7-931f-4bd9-93fd-0171607b7823.png" alt="C" width="50" height="50" />  <img src="https://user-images.githubusercontent.com/69394316/229933791-e856ec96-de62-4784-8df2-a1eb6f033811.png" alt="sh" width="50" height="50" /> 
+
+## License
+
+IllumiTerm is released under the [GNU General Public License v2.0].
+
+[GNU General Public License v2.0]: https://github.com/IllumiTerm/illumiterm/blob/main/COPYING
+
