@@ -17,8 +17,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 if [ -e .gitmodules ] && [ -e .git ]; then
-    echo "* Updating git submodules"
-    git submodule update --init
+  echo "* Updating git submodules"
+  git submodule update --init
 fi
 
 : "${LIBTOOLIZE:=libtoolize}"
