@@ -29,10 +29,10 @@ fi
 : "${AUTOMAKE:=automake}"
 
 check_command() {
-    if ! command -v "$1" > /dev/null 2>&1; then
-        echo "* Error: $1 is required to run autogen.sh" >&2
-        exit 1
-    fi
+  if ! command -v "$1" > /dev/null 2>&1; then
+      echo "* Error: $1 is required to run autogen.sh" >&2
+      exit 1
+  fi
 }
 
 check_command "$LIBTOOLIZE"
@@ -44,19 +44,19 @@ check_command "$AUTOMAKE"
 
 echo "* Running autoreconf"
 $AUTORECONF -vif || {
-    echo "* Error: autoreconf failed. Running autotools manually." >&2
-    for dir in "$PWD"/*; do
-        if [ ! -d "$dir" ] || [ ! -f "$dir"/configure.ac ] && [ ! -f "$dir"/configure.in ]; then
-            continue
-        fi
-        echo "* Running autotools for $(basename "$dir")"
-        (cd "$dir" && $ACLOCAL --force -I m4)
-        (cd "$dir" && $AUTOMAKE --add-missing --copy --force-missing)
-        (cd "$dir" && autoupdate)  # Run autoupdate here
-        (cd "$dir" && $LIBTOOLIZE --copy --force)
-        (cd "$dir" && $AUTOCONF --force)
-        (cd "$dir" && $AUTOHEADER)
-    done
+  echo "* Error: autoreconf failed. Running autotools manually." >&2
+  for dir in "$PWD"/*; do
+      if [ ! -d "$dir" ] || [ ! -f "$dir"/configure.ac ] && [ ! -f "$dir"/configure.in ]; then
+          continue
+      fi
+      echo "* Running autotools for $(basename "$dir")"
+      (cd "$dir" && $ACLOCAL --force -I m4)
+      (cd "$dir" && $AUTOMAKE --add-missing --copy --force-missing)
+      (cd "$dir" && autoupdate)  # Run autoupdate here
+      (cd "$dir" && $LIBTOOLIZE --copy --force)
+      (cd "$dir" && $AUTOCONF --force)
+      (cd "$dir" && $AUTOHEADER)
+  done
 }
 
 echo "* To continue, run ./configure"
