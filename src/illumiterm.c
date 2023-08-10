@@ -76,6 +76,7 @@ void NewWindow(void) {
 void CloseWindow(void) {
     exit(0);
 }
+
 void NewTab(void) {
     g_print("NewTab\n");
 }
@@ -934,7 +935,7 @@ void Preferences(GtkMenuItem *menu_item, gpointer user_data)
 {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Preferences");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_widget_destroyed), &window);
     gtk_window_set_icon_from_file(GTK_WINDOW(window), "/usr/share/icons/hicolor/48x48/apps/illumiterm.png", NULL);
     gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
@@ -942,14 +943,16 @@ void Preferences(GtkMenuItem *menu_item, gpointer user_data)
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+
     GtkWidget *notebook = gtk_notebook_new();
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_TOP);
-    gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
     gtk_widget_set_hexpand(notebook, TRUE);
     gtk_widget_set_vexpand(notebook, TRUE);
     gtk_container_set_border_width(GTK_CONTAINER(notebook), 10);
-    gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
-    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), notebook);
 
     StyleTab(GTK_NOTEBOOK(notebook));
     DisplayTab(GTK_NOTEBOOK(notebook));
@@ -958,7 +961,7 @@ void Preferences(GtkMenuItem *menu_item, gpointer user_data)
 
     GtkWidget *button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_button_box_set_layout(GTK_BUTTON_BOX(button_box), GTK_BUTTONBOX_END);
-    gtk_box_pack_end(GTK_BOX(vbox), button_box, TRUE, TRUE, 15);
+    gtk_box_pack_end(GTK_BOX(vbox), button_box, FALSE, FALSE, 15);
 
     GtkWidget *buttons_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancel");
