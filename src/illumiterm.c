@@ -170,6 +170,97 @@ void MoveTabRight(void) {
     g_print("MoveTabRight\n");
 }
 
+void on_entry_activate(GtkEntry *entry, gpointer user_data) {
+    const gchar *search_text = gtk_entry_get_text(GTK_ENTRY(entry));
+
+    GtkWidget *check_match_case = GTK_WIDGET(user_data);
+    GtkWidget *check_match_word = g_object_get_data(G_OBJECT(check_match_case), "check_match_word");
+    GtkWidget *check_regex = g_object_get_data(G_OBJECT(check_match_case), "check_regex");
+    GtkWidget *check_wrap_around = g_object_get_data(G_OBJECT(check_match_case), "check_wrap_around");
+
+    gboolean match_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_match_case));
+    gboolean match_word = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_match_word));
+    gboolean use_regex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_regex));
+    gboolean wrap_around = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_wrap_around));
+
+    g_print("Search Text: %s\n", search_text);
+    g_print("Match Case: %s\n", match_case ? "True" : "False");
+    g_print("Match Entire Word Only: %s\n", match_word ? "True" : "False");
+    g_print("Use as Regular Expression: %s\n", use_regex ? "True" : "False");
+    g_print("Wrap Around: %s\n", wrap_around ? "True" : "False");
+
+    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(entry)));
+}
+
+void find(void) {
+    gtk_init(0, NULL);
+
+    GtkWidget *dialog = gtk_dialog_new();
+    gtk_window_set_title(GTK_WINDOW(dialog), "Find");
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), NULL);
+    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+    g_signal_connect(G_OBJECT(dialog), "delete-event", G_CALLBACK(gtk_widget_destroy), NULL);
+
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
+
+    const gchar *icon_filename = "/usr/share/icons/hicolor/16x16/apps/preferences-system-search-symbolic.svg";
+    GdkPixbuf *icon_pixbuf = gdk_pixbuf_new_from_file(icon_filename, NULL);
+    GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_icon_from_pixbuf(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, icon_pixbuf);
+    gtk_widget_show(entry);
+    if (icon_pixbuf != NULL) {
+        g_object_unref(icon_pixbuf);
+    } else {
+        g_warning("Failed to load the icon: %s", icon_filename);
+    }
+
+    gtk_widget_set_size_request(entry, 300, -1);
+
+    gtk_container_add(GTK_CONTAINER(hbox), entry);
+
+    GdkPixbuf *up_arrow_pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/24x24/apps/go-up.svg", NULL);
+    GdkPixbuf *down_arrow_pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/24x24/apps/go-down.svg", NULL);
+
+    GtkWidget *up_arrow_image = gtk_image_new_from_pixbuf(up_arrow_pixbuf);
+    GtkWidget *down_arrow_image = gtk_image_new_from_pixbuf(down_arrow_pixbuf);
+
+    if (up_arrow_pixbuf != NULL) {
+        g_object_unref(up_arrow_pixbuf);
+    }
+    if (down_arrow_pixbuf != NULL) {
+        g_object_unref(down_arrow_pixbuf);
+    }
+
+    GtkWidget *up_button = gtk_button_new();
+    GtkWidget *down_button = gtk_button_new();
+    gtk_button_set_image(GTK_BUTTON(up_button), up_arrow_image);
+    gtk_button_set_image(GTK_BUTTON(down_button), down_arrow_image);
+
+    gtk_container_add(GTK_CONTAINER(hbox), up_button);
+    gtk_container_add(GTK_CONTAINER(hbox), down_button);
+
+    GtkWidget *check_match_case = gtk_check_button_new_with_label("Match Case");
+    GtkWidget *check_match_word = gtk_check_button_new_with_label("Match Entire Word Only");
+    GtkWidget *check_regex = gtk_check_button_new_with_label("Use as Regular Expression");
+    GtkWidget *check_wrap_around = gtk_check_button_new_with_label("Wrap Around");
+
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_case);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_word);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_regex);
+    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_wrap_around);
+
+    g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(on_entry_activate), check_match_case);
+
+    g_object_set_data(G_OBJECT(check_match_case), "check_match_word", check_match_word);
+    g_object_set_data(G_OBJECT(check_match_case), "check_regex", check_regex);
+    g_object_set_data(G_OBJECT(check_match_case), "check_wrap_around", check_wrap_around);
+
+    gtk_widget_show_all(dialog);
+
+    gtk_main();
+}
+
 void CloseTab(void) {
     g_print("CloseTab\n");
 }
@@ -265,6 +356,7 @@ gboolean HandleKeyPress(GtkWidget *widget, GdkEventKey *event, gpointer window)
             case GDK_KEY_Right: NextTab(); return TRUE;
             case GDK_KEY_Up: MoveTabLeft(); return TRUE;
             case GDK_KEY_Down: MoveTabRight(); return TRUE;
+            case GDK_KEY_f: find(); return TRUE;
         }
     }
     
@@ -871,6 +963,7 @@ void ShortcutsTab(GtkNotebook *notebook) {
         gtk_label_new("Next Tab:"),
         gtk_label_new("Move Tab Left:"),
         gtk_label_new("Move Tab Right:"),
+        gtk_label_new("Find:"),
         gtk_label_new("Move Window Left:"),
         gtk_label_new("Move Window Right:"),
         gtk_label_new("Enter Fullscreen:"),
@@ -878,6 +971,7 @@ void ShortcutsTab(GtkNotebook *notebook) {
     };
     
     GtkWidget *shortcut_entries[] = {
+        gtk_entry_new(),
         gtk_entry_new(),
         gtk_entry_new(),
         gtk_entry_new(),
@@ -913,6 +1007,7 @@ void ShortcutsTab(GtkNotebook *notebook) {
         "Shift+Ctrl+Right",
         "Shift+Ctrl+Page Up",
         "Shift+Ctrl+Page Down",
+        "Shift+Ctrl+F",
         "Ctrl+Page Left",  
         "Ctrl+Page Right",  
         "Ctrl+Page Up",  
@@ -1221,97 +1316,6 @@ GtkWidget* HelpMenu() {
     gtk_menu_shell_append(GTK_MENU_SHELL(help_menu), about_menu_item);
 
     return help_menu;
-}
-
-void on_entry_activate(GtkEntry *entry, gpointer user_data) {
-    const gchar *search_text = gtk_entry_get_text(GTK_ENTRY(entry));
-
-    GtkWidget *check_match_case = GTK_WIDGET(user_data);
-    GtkWidget *check_match_word = g_object_get_data(G_OBJECT(check_match_case), "check_match_word");
-    GtkWidget *check_regex = g_object_get_data(G_OBJECT(check_match_case), "check_regex");
-    GtkWidget *check_wrap_around = g_object_get_data(G_OBJECT(check_match_case), "check_wrap_around");
-
-    gboolean match_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_match_case));
-    gboolean match_word = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_match_word));
-    gboolean use_regex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_regex));
-    gboolean wrap_around = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_wrap_around));
-
-    g_print("Search Text: %s\n", search_text);
-    g_print("Match Case: %s\n", match_case ? "True" : "False");
-    g_print("Match Entire Word Only: %s\n", match_word ? "True" : "False");
-    g_print("Use as Regular Expression: %s\n", use_regex ? "True" : "False");
-    g_print("Wrap Around: %s\n", wrap_around ? "True" : "False");
-
-    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(entry)));
-}
-
-void find(void) {
-    gtk_init(0, NULL);
-
-    GtkWidget *dialog = gtk_dialog_new();
-    gtk_window_set_title(GTK_WINDOW(dialog), "Find");
-    gtk_window_set_transient_for(GTK_WINDOW(dialog), NULL);
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-    g_signal_connect(G_OBJECT(dialog), "delete-event", G_CALLBACK(gtk_widget_destroy), NULL);
-
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
-
-    const gchar *icon_filename = "/usr/share/icons/hicolor/16x16/apps/preferences-system-search-symbolic.svg";
-    GdkPixbuf *icon_pixbuf = gdk_pixbuf_new_from_file(icon_filename, NULL);
-    GtkWidget *entry = gtk_entry_new();
-    gtk_entry_set_icon_from_pixbuf(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, icon_pixbuf);
-    gtk_widget_show(entry);
-    if (icon_pixbuf != NULL) {
-        g_object_unref(icon_pixbuf);
-    } else {
-        g_warning("Failed to load the icon: %s", icon_filename);
-    }
-
-    gtk_widget_set_size_request(entry, 300, -1);
-
-    gtk_container_add(GTK_CONTAINER(hbox), entry);
-
-    GdkPixbuf *up_arrow_pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/24x24/apps/go-up.svg", NULL);
-    GdkPixbuf *down_arrow_pixbuf = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/24x24/apps/go-down.svg", NULL);
-
-    GtkWidget *up_arrow_image = gtk_image_new_from_pixbuf(up_arrow_pixbuf);
-    GtkWidget *down_arrow_image = gtk_image_new_from_pixbuf(down_arrow_pixbuf);
-
-    if (up_arrow_pixbuf != NULL) {
-        g_object_unref(up_arrow_pixbuf);
-    }
-    if (down_arrow_pixbuf != NULL) {
-        g_object_unref(down_arrow_pixbuf);
-    }
-
-    GtkWidget *up_button = gtk_button_new();
-    GtkWidget *down_button = gtk_button_new();
-    gtk_button_set_image(GTK_BUTTON(up_button), up_arrow_image);
-    gtk_button_set_image(GTK_BUTTON(down_button), down_arrow_image);
-
-    gtk_container_add(GTK_CONTAINER(hbox), up_button);
-    gtk_container_add(GTK_CONTAINER(hbox), down_button);
-
-    GtkWidget *check_match_case = gtk_check_button_new_with_label("Match Case");
-    GtkWidget *check_match_word = gtk_check_button_new_with_label("Match Entire Word Only");
-    GtkWidget *check_regex = gtk_check_button_new_with_label("Use as Regular Expression");
-    GtkWidget *check_wrap_around = gtk_check_button_new_with_label("Wrap Around");
-
-    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_case);
-    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_match_word);
-    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_regex);
-    gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), check_wrap_around);
-
-    g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(on_entry_activate), check_match_case);
-
-    g_object_set_data(G_OBJECT(check_match_case), "check_match_word", check_match_word);
-    g_object_set_data(G_OBJECT(check_match_case), "check_regex", check_regex);
-    g_object_set_data(G_OBJECT(check_match_case), "check_wrap_around", check_wrap_around);
-
-    gtk_widget_show_all(dialog);
-
-    gtk_main();
 }
 
 GtkWidget* CreateMenu() {
