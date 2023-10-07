@@ -395,6 +395,12 @@ gboolean ConfirmExit(GtkWidget* widget, GdkEvent* event, gpointer data) {
 
     gtk_window_set_icon_from_file(GTK_WINDOW(dialog), "/usr/share/icons/hicolor/48x48/apps/illumiterm.png", NULL);
 
+    GtkWidget* yesButton = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_YES);
+    if (GTK_IS_BUTTON(yesButton)) {
+        GtkStyleContext* context = gtk_widget_get_style_context(yesButton);
+        gtk_style_context_add_class(context, "destructive-action"); 
+    }
+
     gint response = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 
