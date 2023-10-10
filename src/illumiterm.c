@@ -521,7 +521,7 @@ void SpawnVteTerminal(GApplicationCommandLine* cli, GtkWidget* window, GtkWidget
     gchar** cmd;
     gchar* cmdline = NULL;
     cmd = command ?
-        (gchar*[]) {"/bin/sh", cmdline = g_strdup(command), NULL} :
+        (gchar*[]) {"/bin/bash", cmdline = g_strdup(command), NULL} :
         (gchar*[]) {cmdline = g_strdup(g_application_command_line_getenv(cli, "SHELL")), NULL};
 
     ConnectVteSignals(widget, window);
