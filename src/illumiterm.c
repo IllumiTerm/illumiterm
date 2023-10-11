@@ -1437,7 +1437,7 @@ void ConnectSignals(GtkApplication *application) {
 }
 
 int RunApp(int argc, char **argv) {
-    GtkApplication *application = gtk_application_new("slck.illumiterm", G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_SEND_ENVIRONMENT); 
+    GtkApplication *application = gtk_application_new("illumiterm.com", G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_SEND_ENVIRONMENT); 
 
     ConnectSignals(application);
     
